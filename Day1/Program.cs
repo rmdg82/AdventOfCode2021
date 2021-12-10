@@ -9,12 +9,12 @@ public class Program
 
     public static void Main(string[] args)
     {
-        PrintHeader(dayNum: 1);
+        ConsoleHelper.PrintHeader(dayNum: 1);
 
         ShowResultPart1(GetInputLines(inputFileName));
         ShowResultPart2(GetInputLines(inputFileName));
 
-        Exit();
+        ConsoleHelper.Exit();
     }
 
     private static void ShowResultPart1(List<string> lines)
@@ -26,7 +26,7 @@ public class Program
             throw new Exception("Input lines as ints are less than 2");
         }
 
-        int increaseCounter = CountIncreasments(linesAsInts);
+        int increaseCounter = CountIncreasements(linesAsInts);
 
         PrettyConsole.Info($"Part1 result is {increaseCounter}");
     }
@@ -43,12 +43,12 @@ public class Program
             sumBy3.Add(linesAsInts[i] + linesAsInts[i + 1] + linesAsInts[i + 2]);
         }
 
-        var increaseCounter = CountIncreasments(sumBy3);
+        var increaseCounter = CountIncreasements(sumBy3);
 
         PrettyConsole.Info($"Part2 result is {increaseCounter}");
     }
 
-    private static int CountIncreasments(List<int> linesAsInts)
+    private static int CountIncreasements(List<int> linesAsInts)
     {
         var increaseCounter = 0;
 
@@ -67,35 +67,5 @@ public class Program
     {
         var inputReader = new InputReader(fileName);
         return inputReader.ReadFile();
-    }
-
-    private static void PrintHeader(int dayNum)
-    {
-        PrettyConsole.WriteWrappedHeader("Advent of code!", '*', headerColor: ConsoleColor.Green);
-        PrettyConsole.WriteWrappedHeader($"Day{dayNum}");
-    }
-
-    private static void Exit(bool isSucces = true, string? errorMessage = null)
-    {
-        if (isSucces)
-        {
-            PrettyConsole.WriteWrappedHeader("All completed. Quitting the application ...", headerColor: ConsoleColor.Green);
-
-            CloseConsole(0);
-        }
-
-        PrettyConsole.WriteWrappedHeader(
-            $"Somenthing went wrong. Quitting the application ... " +
-            (string.IsNullOrEmpty(errorMessage) ? string.Empty : "\nError message: " + errorMessage)
-            , headerColor: ConsoleColor.Red);
-
-        CloseConsole(-1);
-    }
-
-    private static void CloseConsole(int errorCode)
-    {
-        Console.WriteLine("Press any key to close the console ...");
-        Console.ReadKey();
-        Environment.Exit(errorCode);
     }
 }
