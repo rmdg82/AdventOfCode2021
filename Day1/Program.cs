@@ -35,38 +35,15 @@ public class Program
     {
         var linesAsInts = lines.Select(line => Convert.ToInt32(line)).ToList();
 
-        var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWYZ";
-        Dictionary<char, List<int>> letterValuesDict = new();
+        // Create a new list where in position i there is the sum of lines[i] + lines[i+1] + lines[i+2]
+        var sumBy3 = new List<int>();
 
-        // Aggregate by letter in alphabet
         for (int i = 0; i < linesAsInts.Count - 2; i++)
         {
-            char key = alphabet[i % alphabet.Length];
-            List<int> value = new() { linesAsInts[i], linesAsInts[i + 1], linesAsInts[i + 2] };
-
-            if (!letterValuesDict.ContainsKey(key))
-            {
-                letterValuesDict.Add(key, value);
-            }
-            else
-            {
-                var oldValue = letterValuesDict[key];
-                oldValue.AddRange(value);
-                letterValuesDict[key] = oldValue;
-            }
+            sumBy3.Add(linesAsInts[i] + linesAsInts[i + 1] + linesAsInts[i + 2]);
         }
 
-        // Get the list of sums by letter in alphabet order
-        List<int> sumByLetterOrdered = new();
-        foreach (var letter in alphabet)
-        {
-            if (letterValuesDict.TryGetValue(letter, out List<int>? elements))
-            {
-                sumByLetterOrdered.Add(elements.Sum());
-            }
-        }
-
-        var increaseCounter = CountIncreasments(sumByLetterOrdered);
+        var increaseCounter = CountIncreasments(sumBy3);
 
         PrettyConsole.Info($"Part2 result is {increaseCounter}");
     }
