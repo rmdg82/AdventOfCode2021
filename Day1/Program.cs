@@ -4,15 +4,15 @@ namespace Day1;
 
 public class Program
 {
-    private const string inputFileName = "input1.txt";
-    private const string testFileName = "testInput.txt";
+    private const string _inputFileName = "input1.txt";
+    private const string _testFileName = "testInput.txt";
 
     public static void Main(string[] args)
     {
         ConsoleHelper.PrintHeader(dayNum: 1);
 
-        ShowResultPart1(GetInputLines(inputFileName));
-        ShowResultPart2(GetInputLines(inputFileName));
+        ShowResultPart1(GetInputLines(_inputFileName));
+        ShowResultPart2(GetInputLines(_inputFileName));
 
         ConsoleHelper.Exit();
     }
