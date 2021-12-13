@@ -24,20 +24,7 @@ namespace Day3
 
             for (int position = 0; position < lines[0].Length; position++)
             {
-                int counter0 = 0;
-                int counter1 = 0;
-
-                for (int line = 0; line < lines.Count; line++)
-                {
-                    if (lines[line][position] == '1')
-                    {
-                        counter1++;
-                    }
-                    else
-                    {
-                        counter0++;
-                    }
-                }
+                (int counter0, int counter1) = CountOneAndZero(lines, position);
 
                 if (counter1 > counter0)
                 {
@@ -58,15 +45,74 @@ namespace Day3
             PrettyConsole.Info($"Part1 result is {result}");
         }
 
+        private static void ShowResultPart2(List<string> lines)
+        {
+            string oxygenGenRating = string.Empty;
+            string cO2ScrubberRating = string.Empty;
+
+            List<string> mostCommonElements = lines;
+            List<string> leastCommonElements = lines;
+
+            for (int position = 0; position < lines[0].Length; position++)
+            {
+                if (mostCommonElements.Count > 1)
+                {
+                    (int zeros, int ones) = CountOneAndZero(mostCommonElements, position);
+                    // In case counter0 == counter1 keep '1'
+                    char mostCommonValue = zeros > ones ? '0' : '1';
+
+                    mostCommonElements = mostCommonElements.Where(x => x[position] == mostCommonValue).ToList();
+                }
+
+                if (leastCommonElements.Count > 1)
+                {
+                    (int zeros, int ones) = CountOneAndZero(leastCommonElements, position);
+
+                    // In case counter0 == counter1 keep '0'
+                    char leastCommonValue = zeros > ones ? '1' : '0';
+
+                    leastCommonElements = leastCommonElements.Where(x => x[position] == leastCommonValue).ToList();
+                }
+            }
+
+            oxygenGenRating = mostCommonElements.Single();
+            cO2ScrubberRating = leastCommonElements.Single();
+
+            int oxygenDecimal = ConvertToDecimal(oxygenGenRating);
+            int cO2Decimal = ConvertToDecimal(cO2ScrubberRating);
+
+            var result = oxygenDecimal * cO2Decimal;
+            PrettyConsole.Info($"Part2 result is {result}");
+        }
+
+        private static (int count0, int count1) CountOneAndZero(List<string> lines, int position)
+        {
+            if (position < 0 || position >= lines[0].Length)
+            {
+                throw new ArgumentException($"Position {position} must be between 0 and {lines[0].Length}");
+            }
+
+            int counter0 = 0;
+            int counter1 = 0;
+
+            for (int line = 0; line < lines.Count; line++)
+            {
+                if (lines[line][position] == '1')
+                {
+                    counter1++;
+                }
+                else
+                {
+                    counter0++;
+                }
+            }
+
+            return (counter0, counter1);
+        }
+
         private static int ConvertToDecimal(string binaryAsString)
         {
             return Convert.ToInt32(binaryAsString, 2);
-        }
-
-        private static void ShowResultPart2(List<string> lines)
-        {
-            //PrettyConsole.Info($"Part2 result is {result}");
-            throw new NotImplementedException();
         }
 
         private static List<string> GetInputLines(string fileName)
