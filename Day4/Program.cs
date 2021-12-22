@@ -9,7 +9,7 @@ namespace Day4
         private const string _testFileName = "testInput.txt";
 
         public static List<int> DrawnNumbers { get; set; } = new();
-        public static List<Board>? Boards { get; set; }
+        public static List<Board> Boards { get; set; } = new();
 
         private const int _boardSize = 5;
 
@@ -33,10 +33,15 @@ namespace Day4
             foreach (var number in DrawnNumbers)
             {
                 ExtractNumber(Boards, number);
-                var winningBoard = CheckIfThereIsAWinningBoard(Boards);
-                if (winningBoard != null)
+                var winningBoards = CheckIfThereIsAWinningBoard(Boards);
+                if (winningBoards != null)
                 {
-                    result = CalculateWinningScore(winningBoard, number);
+                    if (winningBoards.Count > 1)
+                    {
+                        throw new Exception("More than one board winning at the same time!");
+                    }
+
+                    result = CalculateWinningScore(winningBoards.Single(), number);
                     break;
                 }
             }
@@ -49,8 +54,36 @@ namespace Day4
 
         private static void ShowResultPart2(List<string> lines)
         {
-            var result = "";
-            PrettyConsole.Info($"Part2 result is {result}");
+            DrawnNumbers = ParseDrawnNumbers(lines);
+
+            Boards = ParseBoards(lines);
+
+            int result = 0;
+            foreach (var number in DrawnNumbers)
+            {
+                ExtractNumber(Boards, number);
+                var winningBoards = CheckIfThereIsAWinningBoard(Boards);
+                if (winningBoards != null)
+                {
+                    if (Boards.Count > 1)
+                    {
+                        foreach (var winningBoard in winningBoards)
+                        {
+                            Boards.Remove(winningBoard);
+                        }
+                    }
+                    else
+                    {
+                        result = CalculateWinningScore(winningBoards.Single(), number);
+                        break;
+                    }
+                }
+            }
+
+            if (result != 0)
+            {
+                PrettyConsole.Info($"Part2 result is {result}");
+            }
         }
 
         private static List<int> ParseDrawnNumbers(List<string> lines)
@@ -65,14 +98,21 @@ namespace Day4
             return unmarkedNums.Sum() * number;
         }
 
-        private static Board? CheckIfThereIsAWinningBoard(List<Board> boards)
+        private static List<Board>? CheckIfThereIsAWinningBoard(List<Board> boards)
         {
+            List<Board> result = new();
+
             foreach (var board in boards)
             {
                 if (board.HasWin())
                 {
-                    return board;
+                    result.Add(board);
                 };
+            }
+
+            if (result.Count > 0)
+            {
+                return result;
             }
 
             return null;
