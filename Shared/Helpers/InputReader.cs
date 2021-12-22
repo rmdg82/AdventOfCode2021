@@ -36,10 +36,15 @@ public class InputReader
         return Path.Combine(rootDirectory, InputFolderName);
     }
 
-    public List<string> ReadFile()
+    public List<string> ReadFile(bool removeEmptyEntries = true)
     {
         var fileContent = File.ReadAllText(FilePath);
 
-        return fileContent.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).ToList();
+        if (removeEmptyEntries)
+        {
+            return fileContent.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        return fileContent.Split("\r\n").ToList();
     }
 }
